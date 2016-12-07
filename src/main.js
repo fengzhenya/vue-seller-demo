@@ -4,7 +4,7 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 import routes from './router.js';
 
-import '../static/css/reset.css';
+import './assets/css/reset.css';
 
 Vue.use(VueRouter);
 

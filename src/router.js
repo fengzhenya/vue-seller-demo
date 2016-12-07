@@ -5,7 +5,7 @@ export default [
     },
     {
         path: '/list',
-        component: require('./App'),
+        component: require('./components/list/list'),
         children: [
             {
                 path: '/',
@@ -14,11 +14,11 @@ export default [
             {
                 path: 'goods',
                 component: require('./components/goods/goods')
-            },
-            {
-                path: 'details',
-                component: require('./components/details/details')
             }
         ]
+    },
+    {
+        path: 'details',
+        component: require('./components/details/details')
     }
 ];

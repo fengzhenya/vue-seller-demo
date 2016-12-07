@@ -5,7 +5,7 @@
           <div class="item">
             <router-link to="/list/goods">商品</router-link>
           </div>
-          <div class="item"><router-link to="/list/details">评论</router-link></div>
+          <div class="item">评论</div>
           <div class="item">商家</div>
       </div>
       <!-- 路由匹配到的组件将渲染在这里 -->
@@ -23,7 +23,7 @@
 </script>
 
 <style lang="scss">
-    @import "../static/scss/mixin";
+    @import "../../assets/scss/mixin.scss";
     .tab {
         display: flex;
         height: 88/$ppr;
