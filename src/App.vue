@@ -1,31 +1,37 @@
 <template>
-  <div id="app">
-    <img src="./assets/logo.png">
-    <hello></hello>
+  <div>
+      <seller-header></seller-header>
+      <div class="tab">
+          <div class="item">
+            <router-link to="/list/goods">商品</router-link>
+          </div>
+          <div class="item"><router-link to="/list/details">评论</router-link></div>
+          <div class="item">商家</div>
+      </div>
+      <!-- 路由匹配到的组件将渲染在这里 -->
+      <router-view></router-view>
   </div>
 </template>
 
 <script>
-import Hello from './components/Hello'
-
-export default {
-  name: 'app',
-  components: {
-    Hello
-  }
-}
+    import selleHeader from 'components/header/header';
+    export default {
+        components: {
+            'seller-header': selleHeader
+        }
+    };
 </script>
 
 <style lang="scss">
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-  img {
-      transform: rotate(20deg);
-  }
-}
+    @import "../static/scss/mixin";
+    .tab {
+        display: flex;
+        height: 88/$ppr;
+        .item {
+            flex:1;
+            font-size: 28/$ppr;
+            text-align: center;
+            line-height: 88/$ppr;
+        }
+    }
 </style>
