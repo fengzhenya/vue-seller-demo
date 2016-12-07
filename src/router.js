@@ -9,7 +9,7 @@ export default [
         children: [
             {
                 path: '/',
-                component: require('./components/goods/goods')
+                redirect: 'goods'
             },
             {
                 path: 'goods',
