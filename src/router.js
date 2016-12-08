@@ -1,11 +1,11 @@
 export default [
     {
         path: '/',
-        component: require('./components/index/index')
+        component: require('./views/index/index')
     },
     {
         path: '/list',
-        component: require('./components/list/list'),
+        component: require('./views/list/list'),
         children: [
             {
                 path: '/',
@@ -13,12 +13,12 @@ export default [
             },
             {
                 path: 'goods',
-                component: require('./components/goods/goods')
+                component: require('./views/list/goods/goods')
             }
         ]
     },
     {
-        path: 'details',
-        component: require('./components/details/details')
+        path: '/details/:productCode',
+        component: require('./views/details/details')
     }
 ];
