@@ -17,6 +17,9 @@ var proxyTable = config.dev.proxyTable
 var app = express()
 var compiler = webpack(webpackConfig)
 
+const restc = require('restc');
+app.use('/api',restc.express());
+
 // MOCK 数据
 var appData = require('../data.json');
 var seller = appData.seller;
