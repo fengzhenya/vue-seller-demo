@@ -6,7 +6,22 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
+    data() {
+        return {};
+    },
+    methods: {
+        getGoodData() {
+            axios.get('/api/goods').then(function(response) {
+                console.log(response);
+            });
+        }
+    },
+    created() {
+        this.getGoodData();
+    }
 };
 </script>
 
