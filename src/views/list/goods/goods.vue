@@ -19,9 +19,7 @@ export default {
             });
         }
     },
-    created() {
-        this.getGoodData();
-    }
+    created() {}
 };
 </script>
 
