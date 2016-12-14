@@ -1,5 +1,5 @@
 <template>
-  <div class="header">
+  <div class="header" @click="popflag = true">
     <div class="ht-wrapper">
       <div class="ht-pic">
         <img width="32" height="32" :src="seller.avatar" alt="">
@@ -28,10 +28,18 @@
     <div class="background">
       <img :src="seller.avatar" width="100%" height="100%" alt="">
     </div>
+    <mainPop @closepop="hidePop" v-show="popflag" :seller="seller"></mainPop>
   </div>
 </template>
 <script type="text/ecmascript-6">
+  import mainPop from './pop/pop';
+
   export default {
+    data() {
+      return {
+        popflag: false
+      };
+    },
     props: {
       seller: {
         type: Object
@@ -39,6 +47,15 @@
     },
     created() {
       this.classMap = ['decrease', 'discount', 'special', 'invoice', 'guarantee'];
+    },
+    methods: {
+      hidePop(e) {
+        e.stopPropagation();
+        this.popflag = false;
+      }
+    },
+    components: {
+      mainPop
     }
   };
 </script>
