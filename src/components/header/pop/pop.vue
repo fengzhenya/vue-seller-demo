@@ -6,6 +6,26 @@
         <div class="score-content">
           <scoreView :size="48" :score="seller.score"></scoreView>
         </div>
+        <div class="pop-tit">
+          <div class="line"></div>
+          <div class="text">优惠信息</div>
+          <div class="line"></div>
+        </div>
+        <div class="pop-yhlist">
+          <ul>
+            <li v-for="(item,index) in seller.supports" :key="index">
+              <span class="yh-icon" :class="item.type | fromatYhType"></span><span>{{item.description}}</span>
+            </li>
+          </ul>
+        </div>
+        <div class="pop-tit">
+          <div class="line"></div>
+          <div class="text">商家公告</div>
+          <div class="line"></div>
+        </div>
+        <div class="pop-notice">
+          {{seller.bulletin}}
+        </div>
       </div>
     </div>
     <div class="pop-close">
@@ -34,6 +54,29 @@
     },
     components: {
       scoreView
+    },
+    filters: {
+      fromatYhType(type) {
+        var reCls = null;
+        switch (type) {
+          case 0 :
+            reCls = 'decrease';
+            break;
+          case 1 :
+            reCls = 'discount';
+            break;
+          case 2 :
+            reCls = 'special';
+            break;
+          case 3 :
+            reCls = 'invoice';
+            break;
+          case 4 :
+            reCls = 'guarantee';
+            break;
+        }
+        return reCls;
+      }
     }
   };
 </script>
@@ -91,5 +134,75 @@
   .score-content {
     height: 48/$ppr;
     margin: 32/$ppr 0 56/$ppr;
+  }
+
+  .pop-tit {
+    display: flex;
+    align-items: center;
+    width: 80%;
+    margin: 56/$ppr auto 48/$ppr;
+    .line {
+      font-size: 0;
+      overflow: hidden;
+      height: 1/$ppr;
+      flex: 1;
+      background: rgba(255, 255, 255, .2);
+    }
+    .text {
+      font-size: 28/$ppr;
+      font-weight: 700;
+      padding: 0 24/$ppr;
+      color: #fff;
+      line-height: 28/$ppr;
+    }
+  }
+
+  .pop-yhlist {
+    width: 70%;
+    margin: 48/$ppr auto 56/$ppr;
+    color: #fff;
+
+    li {
+      height: 32/$ppr;
+      line-height: 32/$ppr;
+      margin-bottom: 24/$ppr;
+      &:last-child {
+        margin-bottom: 0;
+      }
+      /*ICON*/
+      .yh-icon {
+        width: 32/$ppr;
+        height: 32/$ppr;
+        margin-right: 12/$ppr;
+        background-repeat: no-repeat;
+        background-size: cover;
+        display: inline-block;
+        vertical-align: top;
+        &.decrease {
+          @include bg-image('../../../assets/images/decrease_2');
+        }
+        &.discount {
+          @include bg-image('../../../assets/images/discount_2');
+        }
+        &.guarantee {
+          @include bg-image('../../../assets/images/guarantee_2');
+        }
+        &.invoice {
+          @include bg-image('../../../assets/images/invoice_2');
+        }
+        &.special {
+          @include bg-image('../../../assets/images/special_2');
+        }
+      }
+
+    }
+  }
+
+  .pop-notice {
+    width: 70%;
+    color: #fff;
+    font-size: 24/$ppr;
+    line-height:48/$ppr;
+    margin: 48/$ppr auto 0;
   }
 </style>

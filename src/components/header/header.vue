@@ -28,7 +28,9 @@
     <div class="background">
       <img :src="seller.avatar" width="100%" height="100%" alt="">
     </div>
-    <mainPop @closepop="hidePop" v-show="popflag" :seller="seller"></mainPop>
+    <transition name="fade" appear>
+      <mainPop @closepop="hidePop" v-show="popflag" :seller="seller"></mainPop>
+    </transition>
   </div>
 </template>
 <script type="text/ecmascript-6">
@@ -63,6 +65,19 @@
 
 <style rel="stylesheet/scss" lang="scss">
   @import "../../assets/scss/mixin.scss";
+
+  /*弹窗动画*/
+  .fade-enter-active,.fade-leave-active {
+    transition: all .4s ease;
+  }
+  .fade-enter {
+    transform: scale(2);
+    opacity: 0;
+  }
+  .fade-leave-active {
+    transform: scale(2);
+    opacity: 0;
+  }
 
   .header {
     width: 100%;
