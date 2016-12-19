@@ -1,5 +1,5 @@
 <template>
-  <div class="main-pop">
+  <div class="main-pop" @click="stopfns">
     <div class="pop-wrapper">
       <div class="pop-content">
         <h2>{{seller.name}}</h2>
@@ -14,7 +14,7 @@
         <div class="pop-yhlist">
           <ul>
             <li v-for="(item,index) in seller.supports" :key="index">
-              <span class="yh-icon" :class="item.type | fromatYhType"></span><span>{{item.description}}</span>
+              <typeIcons :type="item.type"></typeIcons><span>{{item.description}}</span>
             </li>
           </ul>
         </div>
@@ -35,6 +35,7 @@
 </template>
 <script type="text/ecmascript-6">
   import scoreView from '../../score/score';
+  import typeIcons from '../../typeIcon/TypeIcon';
 
   export default {
     data() {
@@ -50,33 +51,14 @@
     methods: {
       close(e) {
         this.$emit('closepop', e);
+      },
+      stopfns(e) {
+        e.stopPropagation();
       }
     },
     components: {
-      scoreView
-    },
-    filters: {
-      fromatYhType(type) {
-        var reCls = null;
-        switch (type) {
-          case 0 :
-            reCls = 'decrease';
-            break;
-          case 1 :
-            reCls = 'discount';
-            break;
-          case 2 :
-            reCls = 'special';
-            break;
-          case 3 :
-            reCls = 'invoice';
-            break;
-          case 4 :
-            reCls = 'guarantee';
-            break;
-        }
-        return reCls;
-      }
+      scoreView,
+      typeIcons
     }
   };
 </script>
@@ -161,7 +143,6 @@
     width: 70%;
     margin: 48/$ppr auto 56/$ppr;
     color: #fff;
-
     li {
       height: 32/$ppr;
       line-height: 32/$ppr;
@@ -169,32 +150,6 @@
       &:last-child {
         margin-bottom: 0;
       }
-      /*ICON*/
-      .yh-icon {
-        width: 32/$ppr;
-        height: 32/$ppr;
-        margin-right: 12/$ppr;
-        background-repeat: no-repeat;
-        background-size: cover;
-        display: inline-block;
-        vertical-align: top;
-        &.decrease {
-          @include bg-image('../../../assets/images/decrease_2');
-        }
-        &.discount {
-          @include bg-image('../../../assets/images/discount_2');
-        }
-        &.guarantee {
-          @include bg-image('../../../assets/images/guarantee_2');
-        }
-        &.invoice {
-          @include bg-image('../../../assets/images/invoice_2');
-        }
-        &.special {
-          @include bg-image('../../../assets/images/special_2');
-        }
-      }
-
     }
   }
 
@@ -202,7 +157,7 @@
     width: 70%;
     color: #fff;
     font-size: 24/$ppr;
-    line-height:48/$ppr;
+    line-height: 48/$ppr;
     margin: 48/$ppr auto 0;
   }
 </style>

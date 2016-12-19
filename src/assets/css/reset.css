@@ -98,3 +98,21 @@ body {
   -webkit-text-size-adjust: none;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
+
+/*router动画*/
+/*.ani-router-enter-active,.ani-router-leave-active {*/
+  /*transition: all .3s ease;*/
+  /*position: absolute;*/
+  /*left:0;*/
+  /*top:0;*/
+  /*right:0;*/
+  /*bottom:0;*/
+/*}*/
+/*.ani-router-enter {*/
+  /*transform: translate3d(50%,0,0);*/
+  /*opacity: 0;*/
+/*}*/
+/*.ani-router-leave-active {*/
+  /*transform: translate3d(-50%,0,0);*/
+  /*opacity: 0;*/
+/*}*/

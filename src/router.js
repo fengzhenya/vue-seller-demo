@@ -1,5 +1,6 @@
 export default [
     {
+        name: '首页',
         path: '/',
         component: require('./views/index/index')
     },
@@ -13,7 +14,7 @@ export default [
             },
             {
                 path: 'goods',
-                component: require('./views/list/goods/goods')
+                component: require('./views/list/goods/Goods')
             }
         ]
     },

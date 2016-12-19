@@ -9,10 +9,16 @@ import './assets/css/reset.css';
 Vue.use(VueRouter);
 
 const router = new VueRouter({
-    routes
+  routes
 });
 
 /* eslint-disable no-new */
 new Vue({
-    router
+  router
 }).$mount('#app');
+
+router.afterEach((to, from, next) => {
+  console.log(to);
+  console.log(from);
+  document.title = to.name;
+});

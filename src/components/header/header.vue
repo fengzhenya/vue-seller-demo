@@ -13,7 +13,7 @@
           {{seller.description}}/{{seller.deliveryTime}}分钟送达
         </div>
         <div class="ct-cx" v-if="seller.supports">
-          <span class="icon" :class="classMap[seller.supports[0].type]"></span>
+          <TypeIcon :type="seller.supports[0].type"></TypeIcon>
           <span class="text">{{seller.supports[0].description}}</span>
         </div>
       </div>
@@ -28,14 +28,14 @@
     <div class="background">
       <img :src="seller.avatar" width="100%" height="100%" alt="">
     </div>
-    <transition name="fade" appear>
+    <transition name="fade">
       <mainPop @closepop="hidePop" v-show="popflag" :seller="seller"></mainPop>
     </transition>
   </div>
 </template>
 <script type="text/ecmascript-6">
   import mainPop from './pop/pop';
-
+  import TypeIcon from '../typeIcon/TypeIcon';
   export default {
     data() {
       return {
@@ -47,9 +47,6 @@
         type: Object
       }
     },
-    created() {
-      this.classMap = ['decrease', 'discount', 'special', 'invoice', 'guarantee'];
-    },
     methods: {
       hidePop(e) {
         e.stopPropagation();
@@ -57,7 +54,8 @@
       }
     },
     components: {
-      mainPop
+      mainPop,
+      TypeIcon
     }
   };
 </script>
@@ -68,14 +66,14 @@
 
   /*弹窗动画*/
   .fade-enter-active,.fade-leave-active {
-    transition: all .4s ease;
+    transition: all .3s ease;
   }
   .fade-enter {
     transform: scale(2);
     opacity: 0;
   }
   .fade-leave-active {
-    transform: scale(2);
+    transform: scale(1.5);
     opacity: 0;
   }
 
@@ -170,29 +168,10 @@
 
   .ct-cx {
     font-size: 0;
-    .icon {
+    .type-icon {
       width: 24/$ppr;
       height: 24/$ppr;
-      display: inline-block;
       margin-right: 8/$ppr;
-      background-size: cover;
-      background-repeat: no-repeat;
-      vertical-align: top;
-      &.decrease {
-        @include bg-image('../../assets/images/decrease_1');
-      }
-      &.discount {
-        @include bg-image('../../assets/images/discount_1');
-      }
-      &.guarantee {
-        @include bg-image('../../assets/images/guarantee_1');
-      }
-      &.invoice {
-        @include bg-image('../../assets/images/invoice_1');
-      }
-      &.special {
-        @include bg-image('../../assets/images/special_1');
-      }
     }
     .text {
       font-size: 20/$ppr;
