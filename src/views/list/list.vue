@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="m-wrap">
     <seller-header :seller="seller"></seller-header>
     <div class="tab">
       <div class="item">
@@ -10,9 +10,11 @@
     </div>
     <!-- 路由匹配到的组件将渲染在这里 -->
     <router-view></router-view>
-
     <shopCart :selectedFoods="selFoods" :deliveryPrice="seller.deliveryPrice"
               :minPrice="seller.minPrice"></shopCart>
+    <transition name="fade">
+      <div class="list-mask" v-show="listMaskShow" @click.stop="listMaskHide"></div>
+    </transition>
   </div>
 </template>
 
@@ -25,7 +27,8 @@
     data() {
       return {
         seller: {},
-        busGoods: []
+        busGoods: [],
+        listMaskShow: false
       };
     },
     components: {
@@ -43,6 +46,9 @@
       Bus.$on('sendgoods', (goods) => {
         _this.busGoods = goods;
       });
+      Bus.$on('listMaskFn', (flag) => {
+        this.listMaskShow = flag;
+      });
     },
     computed: {
       selFoods() {
@@ -55,6 +61,12 @@
           });
         });
         return selectedArr;
+      }
+    },
+    methods: {
+      listMaskHide() {
+        this.listMaskShow = false;
+        Bus.$emit('listMaskHide', false);
       }
     }
   };
@@ -76,5 +88,16 @@
         color: rgb(240, 20, 20);
       }
     }
+  }
+
+  .list-mask {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background: rgba(7, 17, 27, .6);
+    backdrop-filter: blur(10/$ppr);
+    z-index: 30;
   }
 </style>

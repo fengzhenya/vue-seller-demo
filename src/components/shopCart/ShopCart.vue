@@ -1,31 +1,59 @@
 <template>
   <div class="shopCart">
-    <div class="sc-left" :class="{'highlight': totalCount > 0}">
-      <div class="sc-icon">
-        <div class="sc-icon-con">
-          <div class="num" v-show="totalCount > 0">{{totalCount}}</div>
+    <div class="shopCart-content" @click="toggleList">
+      <div class="sc-left" :class="{'highlight': totalCount > 0}">
+        <div class="sc-icon">
+          <div class="sc-icon-con">
+            <div class="num" v-show="totalCount > 0">{{totalCount}}</div>
+          </div>
+        </div>
+        <div class="pri">&yen;{{totalPrice}}</div>
+        <div class="desc">另需要配送费&yen;{{deliveryPrice}}元</div>
+      </div>
+      <div class="sc-right">
+        <div class="sc-right-pri" :class="payClass" @click="payfns($event)">{{payDesc}}</div>
+      </div>
+      <div class="balls-con">
+        <template v-for="item,index in balls">
+          <transition @before-enter="beforeEnter" @after-enter="afterEnter" @leave="leave"
+                      @after-leave="afterLeave" name="drop">
+            <div class="ball-item" v-show="item.show" :data-index="index">
+              <div class="ball-inner J-ball-inner"></div>
+            </div>
+          </transition>
+        </template>
+      </div>
+    </div>
+    <transition name="cartShow">
+      <div class="shopCart-list" v-show="shopCartshow">
+        <div class="list-header">
+          <h3>购物车</h3>
+          <span @click.stop="empty">清空</span>
+        </div>
+        <div class="list-content" ref="listContent">
+          <ul>
+            <li v-for="food in selectedFoods">
+              <div class="list-con">
+                <div class="list-inner">
+                  <div class="list-name">{{food.name}}</div>
+                  <div class="list-pri">&yen;<span>{{food.price*food.count}}</span></div>
+                </div>
+                <div class="list-cartcontrol">
+                  <cartControl :food="food"></cartControl>
+                </div>
+              </div>
+            </li>
+          </ul>
         </div>
       </div>
-      <div class="pri">&yen;{{totalPrice}}</div>
-      <div class="desc">另需要配送费&yen;{{deliveryPrice}}元</div>
-    </div>
-    <div class="sc-right">
-      <div class="sc-right-pri" :class="payClass">{{payDesc}}</div>
-    </div>
-    <div class="balls-con">
-      <template v-for="item,index in balls">
-        <transition @before-enter="beforeEnter" @after-enter="afterEnter" @leave="leave"
-                    @after-leave="afterLeave" name="drop">
-          <div class="ball-item" v-show="item.show" :data-index="index">
-            <div class="ball-inner J-ball-inner"></div>
-          </div>
-        </transition>
-      </template>
-    </div>
+    </transition>
+
   </div>
 </template>
 <script type="text/ecmascript-6">
   import Bus from 'src/vueBus.js';
+  import cartControl from 'components/cartcontrol/CartControl';
+  import BScroll from 'better-scroll';
   export default {
     props: {
       selectedFoods: {
@@ -67,7 +95,7 @@
             isBusy: false
           }
         ],
-        dropBalls: []
+        fold: false
       };
     },
     created() {
@@ -80,14 +108,21 @@
               ball.show = true;
               ball.isBusy = true;
               ball.el = target;
-              _this.dropBalls.push(ball);
               return;
             }
           }
         });
       });
+      Bus.$on('listMaskHide', (flag) => {
+        this.fold = flag;
+      });
     },
     computed: {
+      empty() {
+        this.selectedFoods.forEach((food) => {
+          food.count = 0;
+        });
+      },
       totalPrice() {
         let totalPrice = 0;
         this.selectedFoods.forEach((food) => {
@@ -115,9 +150,41 @@
         if (this.totalPrice >= this.minPrice) {
           return 'enough';
         }
+      },
+      shopCartshow() {
+        if (!this.totalCount > 0) {
+          this.fold = false;
+          Bus.$emit('listMaskFn', this.fold);
+          return false;
+        }
+        if (this.fold) {
+          this.$nextTick(() => {
+            if (!this.BScroll) {
+              this.BScroll = new BScroll(this.$refs.listContent, {
+                click: true
+              });
+            } else {
+              this.BScroll.refresh();
+            }
+          });
+        }
+        return this.fold;
       }
     },
     methods: {
+      payfns(event) {
+        if (this.payDesc === '去结算') {
+          event.stopPropagation();
+          window.alert(`需要支付${this.totalPrice}元`);
+        }
+      },
+      toggleList() {
+        if (!this.totalCount) {
+          return;
+        }
+        this.fold = !this.fold;
+        Bus.$emit('listMaskFn', this.fold);
+      },
       beforeEnter(el) {
         let count = this.balls.length;
         while (count--) {
@@ -129,6 +196,7 @@
             let x = lib.flexible.px2rem(rect.left) - lib.flexible.px2rem(32);
             let y = -(lib.flexible.px2rem(window.innerHeight - rect.top) - lib.flexible.px2rem(38));
             el.style.dispaly = '';
+            el.style.opacity = 0.5;
             el.style.webkitTransform = `translate3d(0,${y}rem,0)`;
             el.style.transform = `translate3d(0,${y}rem,0)`;
             let inner = el.querySelectorAll('.J-ball-inner')[0];
@@ -144,6 +212,7 @@
         }
       },
       leave(el) {
+        el.style.opacity = 1;
         el.style.webkitTransform = 'translate3d(0,0,0)';
         el.style.transform = 'translate3d(0,0,0)';
         let inner = el.querySelectorAll('.J-ball-inner')[0];
@@ -157,6 +226,9 @@
           el.style.display = 'none';
         }
       }
+    },
+    components: {
+      cartControl
     }
   };
 </script>
@@ -169,6 +241,11 @@
     left: 0;
     bottom: 0;
     right: 0;
+    z-index: 40;
+  }
+
+  .shopCart-content {
+    height: 98/$ppr;
     background: #141d27;
     display: flex;
   }
@@ -272,6 +349,84 @@
         height: 32/$ppr;
         border-radius: 50%;
         background: #00a0dc;
+      }
+    }
+  }
+
+  .shopCart-list {
+    position: absolute;
+    left: 0;
+    top: 0/$ppr;
+    right: 0;
+    z-index: -1;
+    transform: translate3d(0, -100%, 0);
+    &.cartShow-enter-active, &.cartShow-leave-active {
+      transform: translate3d(0, -100%, 0);
+      transition: all .5s ease;
+    }
+    &.cartShow-enter, &.cartShow-leave-active {
+      transform: translate3d(0, 100%, 0);
+    }
+    .list-header {
+      display: flex;
+      justify-content: space-between;
+      height: 80/$ppr;
+      background-color: #f3f5f7;
+      border-bottom: 1px solid rgba(7, 17, 27, 0.1);
+      h3 {
+        font-size: 28/$ppr;
+        line-height: 80/$ppr;
+        color: rgb(7, 17, 27);
+        padding: 0 38/$ppr;
+      }
+      span {
+        font-size: 24/$ppr;
+        color: rgb(0, 160, 220);
+        line-height: 80/$ppr;
+        padding: 0 38/$ppr;
+      }
+    }
+    .list-content {
+      background-color: #fff;
+      max-height: 370/$ppr;
+      overflow: hidden;
+      li {
+        padding: 0 35/$ppr;
+      }
+      .list-con {
+        padding: 9/$ppr 0;
+        border-bottom: 1px solid rgba(7, 12, 27, 0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .list-inner {
+        flex: 1;
+        display: flex;
+        justify-content: space-between;
+        max-width: 70%;
+      }
+      .list-name {
+        line-height: 48/$ppr;
+        font-size: 28/$ppr;
+        color: rgb(7, 17, 27);
+        max-width: 70%;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
+      .list-pri {
+        line-height: 48/$ppr;
+        font-size: 20/$ppr;
+        color: rgb(240, 20, 20);
+        span {
+          font-size: 28/$ppr;
+          font-weight: 700;
+        }
+      }
+      .list-cartcontrol {
+        margin: 0 -15/$ppr 0 24/$ppr;
+        min-width: 20%;
       }
     }
   }

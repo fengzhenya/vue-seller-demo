@@ -75,7 +75,7 @@
           let height1 = this.listHeight[i];
           let height2 = this.listHeight[i + 1];
           if (!height2 || (this.scrollY >= height1 && this.scrollY < height2)) {
-            this.menuScroll.scrollToElement(menuList[i - 1], 400);
+             this.menuScroll.scrollToElement(menuList[i - 1], 400);
             return i;
           }
         }
