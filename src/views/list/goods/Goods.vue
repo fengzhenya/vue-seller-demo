@@ -254,7 +254,6 @@
       .now {
         color: #f01414;
         font-size: 28/$ppr;
-        vertical-align: middle;
       }
     }
   }

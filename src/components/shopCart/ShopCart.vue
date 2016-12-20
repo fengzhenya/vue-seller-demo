@@ -13,9 +13,10 @@
       <div class="sc-right-pri" :class="payClass">{{payDesc}}</div>
     </div>
     <div class="balls-con">
-      <template v-for="item in balls">
-        <transition @before-enter="beforeEnter" @after-enter="afterEnter" @enter="enter" name="drop">
-          <div class="ball-item" v-show="item.show">
+      <template v-for="item,index in balls">
+        <transition @before-enter="beforeEnter" @after-enter="afterEnter" @leave="leave"
+                    @after-leave="afterLeave" name="drop">
+          <div class="ball-item" v-show="item.show" :data-index="index">
             <div class="ball-inner J-ball-inner"></div>
           </div>
         </transition>
@@ -46,19 +47,24 @@
       return {
         balls: [
           {
-            show: false
+            show: false,
+            isBusy: false
           },
           {
-            show: false
+            show: false,
+            isBusy: false
           },
           {
-            show: false
+            show: false,
+            isBusy: false
           },
           {
-            show: false
+            show: false,
+            isBusy: false
           },
           {
-            show: false
+            show: false,
+            isBusy: false
           }
         ],
         dropBalls: []
@@ -67,15 +73,18 @@
     created() {
       const _this = this;
       Bus.$on('dropCtrl', function (target) {
-        for (let i = 0; i < _this.balls.length; i++) {
-          let ball = _this.balls[i];
-          if (!ball.show) {
-            ball.show = true;
-            ball.el = target;
-            _this.dropBalls.push(ball);
-            return;
+        this.$nextTick(() => {
+          for (let i = 0; i < _this.balls.length; i++) {
+            let ball = _this.balls[i];
+            if (!ball.isBusy) {
+              ball.show = true;
+              ball.isBusy = true;
+              ball.el = target;
+              _this.dropBalls.push(ball);
+              return;
+            }
           }
-        }
+        });
       });
     },
     computed: {
@@ -110,7 +119,6 @@
     },
     methods: {
       beforeEnter(el) {
-        console.log('before');
         let count = this.balls.length;
         while (count--) {
           let ball = this.balls[count];
@@ -129,25 +137,24 @@
           }
         }
       },
-      enter(el, done) {
-        console.log('enter');
-        /* eslint-disable no-unused-vars */
-        // let rf = el.offsetHeight;
-        this.$nextTick(function () {
-          el.style.webkitTransform = 'translate3d(0,0,0)';
-          el.style.transform = 'translate3d(0,0,0)';
-          let inner = el.querySelectorAll('.J-ball-inner')[0];
-          inner.style.webkitTransform = 'translate3d(0,0,0)';
-          inner.style.transform = 'translate3d(0,0,0)';
-        });
-        done();
-      },
       afterEnter(el) {
-        console.log('afterenter');
-        let ball = this.dropBalls.shift();
+        let ball = this.balls[el.getAttribute('data-index')];
         if (ball) {
           ball.show = false;
-          el.style.dispaly = 'none';
+        }
+      },
+      leave(el) {
+        el.style.webkitTransform = 'translate3d(0,0,0)';
+        el.style.transform = 'translate3d(0,0,0)';
+        let inner = el.querySelectorAll('.J-ball-inner')[0];
+        inner.style.webkitTransform = 'translate3d(0,0,0)';
+        inner.style.transform = 'translate3d(0,0,0)';
+      },
+      afterLeave(el) {
+        let ball = this.balls[el.getAttribute('data-index')];
+        if (ball) {
+          ball.isBusy = false;
+          el.style.display = 'none';
         }
       }
     }
@@ -254,13 +261,17 @@
       left: 64/$ppr;
       bottom: 48/$ppr;
       z-index: 200;
-      transition: all 0.4s cubic-bezier(0.49, -0.29, 0.75, 0.41);
+      &.drop-leave-active {
+        transition: all 0.4s cubic-bezier(0.49, -0.29, 0.75, 0.41);
+        .ball-inner {
+          transition: all 0.4s linear;
+        }
+      }
       .ball-inner {
         width: 32/$ppr;
         height: 32/$ppr;
         border-radius: 50%;
-        background: rgb(0, 0, 0);
-        transition: all 0.4s linear;
+        background: #00a0dc;
       }
     }
   }
