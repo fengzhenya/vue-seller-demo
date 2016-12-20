@@ -13,16 +13,13 @@
       <div class="sc-right-pri" :class="payClass">{{payDesc}}</div>
     </div>
     <div class="balls-con">
-      <transition-group
-        @before-enter="beforeEnter"
-        @enter="enters"
-        @after-enter="afterEnter"
-        name="drop"
-        tag="div">
-        <div class="ball-item" v-for="(item,index) in balls" v-show="item.show" :key="Math.random()">
-          <div class="ball-inner J-ball-inner"></div>
-        </div>
-      </transition-group>
+      <template v-for="item in balls">
+        <transition @before-enter="beforeEnter" @after-enter="afterEnter" @enter="enter" name="drop">
+          <div class="ball-item" v-show="item.show">
+            <div class="ball-inner J-ball-inner"></div>
+          </div>
+        </transition>
+      </template>
     </div>
   </div>
 </template>
@@ -67,13 +64,18 @@
         dropBalls: []
       };
     },
-    mounted() {
+    created() {
       const _this = this;
-      // 细节优化
-      this.$nextTick(() => {
-        Bus.$on('dropCtrl', function (target) {
-          _this._dropBall(target);
-        });
+      Bus.$on('dropCtrl', function (target) {
+        for (let i = 0; i < _this.balls.length; i++) {
+          let ball = _this.balls[i];
+          if (!ball.show) {
+            ball.show = true;
+            ball.el = target;
+            _this.dropBalls.push(ball);
+            return;
+          }
+        }
       });
     },
     computed: {
@@ -107,18 +109,8 @@
       }
     },
     methods: {
-      _dropBall(el) {
-        for (let i = 0; i < this.balls.length; i++) {
-          let ball = this.balls[i];
-          if (!ball.show) {
-            ball.show = true;
-            ball.el = el;
-            this.dropBalls.push(ball);
-            return;
-          }
-        }
-      },
       beforeEnter(el) {
+        console.log('before');
         let count = this.balls.length;
         while (count--) {
           let ball = this.balls[count];
@@ -137,19 +129,21 @@
           }
         }
       },
-      enters(el, done) {
+      enter(el, done) {
+        console.log('enter');
         /* eslint-disable no-unused-vars */
         // let rf = el.offsetHeight;
-        this.$nextTick(() => {
+        this.$nextTick(function () {
           el.style.webkitTransform = 'translate3d(0,0,0)';
           el.style.transform = 'translate3d(0,0,0)';
           let inner = el.querySelectorAll('.J-ball-inner')[0];
           inner.style.webkitTransform = 'translate3d(0,0,0)';
           inner.style.transform = 'translate3d(0,0,0)';
-          done();
         });
+        done();
       },
       afterEnter(el) {
+        console.log('afterenter');
         let ball = this.dropBalls.shift();
         if (ball) {
           ball.show = false;
@@ -259,8 +253,8 @@
       position: fixed;
       left: 64/$ppr;
       bottom: 48/$ppr;
-      z-index: 2000;
-      transition: all .4s cubic-bezier(.82, -0.23, .7, .65);
+      z-index: 200;
+      transition: all 0.4s cubic-bezier(0.49, -0.29, 0.75, 0.41);
       .ball-inner {
         width: 32/$ppr;
         height: 32/$ppr;
