@@ -1,11 +1,13 @@
 <template>
-  <div class="m-wrap">
+  <div class="m-listPage">
     <seller-header :seller="seller"></seller-header>
     <div class="tab">
       <div class="item">
         <router-link to="/list/goods">商品</router-link>
       </div>
-      <div class="item">评论</div>
+      <div class="item">
+        <router-link to="/list/discus">评论</router-link>
+      </div>
       <div class="item">商家</div>
     </div>
     <!-- 路由匹配到的组件将渲染在这里 -->
@@ -75,6 +77,10 @@
 <style rel="stylesheet/scss" lang="scss">
   @import "../../assets/scss/mixin.scss";
 
+  .m-listPage {
+    min-height: 100%;
+  }
+
   .tab {
     display: flex;
     height: 82/$ppr;
@@ -100,4 +106,5 @@
     backdrop-filter: blur(10/$ppr);
     z-index: 30;
   }
+
 </style>

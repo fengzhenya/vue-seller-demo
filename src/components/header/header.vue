@@ -65,13 +65,15 @@
   @import "../../assets/scss/mixin.scss";
 
   /*弹窗动画*/
-  .fade-enter-active,.fade-leave-active {
+  .fade-enter-active, .fade-leave-active {
     transition: all .3s ease;
   }
+
   .fade-enter {
     transform: scale(2);
     opacity: 0;
   }
+
   .fade-leave-active {
     transform: scale(1.5);
     opacity: 0;

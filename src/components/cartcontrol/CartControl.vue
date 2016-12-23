@@ -1,7 +1,7 @@
 <template>
   <div class="cart-conctrol">
     <transition name="mcds">
-      <div class="cart-decrease" v-show="food.count > 0" @click="minusCart($event)">
+      <div class="cart-decrease" v-show="food.count > 0" @click.stop="minusCart($event)">
         <em>-</em>
       </div>
     </transition>

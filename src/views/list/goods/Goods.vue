@@ -15,7 +15,7 @@
         <li v-for="item in goods" class="food-list J-foodList">
           <h2 class="title">{{item.name}}</h2>
           <ul class="food-item-con">
-            <li v-for="food in item.foods" class="food-item">
+            <li v-for="food in item.foods" class="food-item" @click.stop="foodRouterGo(food)">
               <div class="item-pic">
                 <img :src="food.icon" alt="">
               </div>
@@ -58,7 +58,7 @@
     created() {
       var _this = this;
       axios.get('/api/goods').then(function (response) {
-        console.log(response);
+//        console.log(response);
         _this.goods = response.data.data;
         _this.$nextTick(function () {
           _this._initScroll();
@@ -75,7 +75,7 @@
           let height1 = this.listHeight[i];
           let height2 = this.listHeight[i + 1];
           if (!height2 || (this.scrollY >= height1 && this.scrollY < height2)) {
-             this.menuScroll.scrollToElement(menuList[i - 1], 400);
+            this.menuScroll.scrollToElement(menuList[i - 1], 400);
             return i;
           }
         }
@@ -118,11 +118,19 @@
       },
       foodsConctrol() {
         Bus.$emit('sendgoods', this.goods);
+      },
+      foodRouterGo(proItem) {
+        this.proItem = proItem;
+        this.$router.push({path: '/details/' + proItem.sellCount});
+//        this.$router.push({name: 'details', params: {id: 23324423, ad: 345345345}});
       }
     },
     components: {
       typeIcons,
       cartControl
+    },
+    destroyed() {
+      Bus.$emit('foodToDet', this.proItem);
     }
   };
 </script>
